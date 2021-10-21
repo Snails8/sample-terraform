@@ -20,37 +20,6 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
-variable "app_name" {
-  type = string
-  default = "sample"
-}
-
-# AZ の設定(冗長化のため配列でlist化してある)
-variable "azs" {
-  type = list(string)
-  default = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
-}
-
-# ELB で使用 https化に使う
-variable "domain" {
-  type = string
-  default = "sample.com"
-}
-
-# acm で使用 (TLS証明書)
-variable "zone" {
-  type = string
-  default = "sample.com"
-}
-
-variable "LOKI_USER" {
-  type = string
-}
-
-variable "LOKI_PASS" {
-  type = string
-}
-
 # ========================================================
 # Network 作成
 #
@@ -102,6 +71,8 @@ module "ecs_cluster" {
 
 # ACM 発行
 module "acm" {
+  count  = var.test_enviroment ? 1 : 0
+
   source   = "./acm"
   app_name = var.app_name
   zone     = var.zone
@@ -117,7 +88,8 @@ module "elb" {
 
   domain = var.domain
   zone   = var.zone
-  acm_id = module.acm.acm_id
+
+  # acm_id = module.acm.acm_id 
 }
 
 # IAM 設定
@@ -133,19 +105,6 @@ module "iam" {
 #
 # [subnetGroup, securityGroup, RDS instance(postgreSQL)]
 # ========================================================
-
-variable "DB_NAME" {
-  type = string
-}
-
-variable "DB_MASTER_NAME" {
-  type = string
-}
-
-variable "DB_MASTER_PASS" {
-  type = string
-}
-
 # RDS (PostgreSQL)
 module "rds" {
   source = "./rds"
@@ -157,4 +116,26 @@ module "rds" {
   database_name   = var.DB_NAME
   master_username = var.DB_MASTER_NAME
   master_password = var.DB_MASTER_PASS
+}
+
+# ========================================================
+# Elasticache (Redis)
+#
+# ========================================================
+module "elasticache" {
+  source = "./elasticache"
+  app_name = var.app_name
+  vpc_id = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids
+}
+
+# ========================================================
+# SES : Simple Email Service
+# メール送信に使用
+# ========================================================
+module "ses" {
+  count  = var.test_enviroment ? 1 : 0
+  source = "./ses"
+  domain = var.domain
+  zone   = var.zone
 }
