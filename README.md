@@ -34,7 +34,9 @@ $ docker-compose exec terraform /bin/ash
 $ aws ecr create-repository --repository-name sample-app
 $ aws ecr create-repository --repository-name sample-nginx
 ```
-4. 
+4. ECSのcontainer-definitionの編集
+ECR名に合わせてください
+
 Q  how to connect ec2 ?
 ```
 $ ssh -i ~/.ssh/秘密鍵 ec2-user@IPアドレス
