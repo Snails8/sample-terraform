@@ -35,7 +35,10 @@ $ aws ecr create-repository --repository-name sample-app
 $ aws ecr create-repository --repository-name sample-nginx
 ```
 4. ECSのcontainer-definitionの編集
-ECR名に合わせてください
+```
+ECR名に合わせる
+```
+
 
 Q  how to connect ec2 ?
 ```
