@@ -6,38 +6,37 @@
 // set your credential keys in .env
 $ cp .env.example .env
 
+// set prod env
+$ cp .env.production.example .envproduction
+
 // set your public key
 $ vim ec2/sample-ec2-key.pub
-
 ```
 
 2. Run terraform
 ```
 $ docker-compose up -d
-$ docker-compose exec terraform /bin/ash
+// 設定を変えた場合、毎回は走らせること
+$ make init 
 
-設定を変えた場合、毎回は走らせること
-# terraform init 
-
-// 	initialization (if you change a file , please run)
-# terraform plan
+$ make plan
 
 // create aws resources 
-# terraform apply
+$make apply
 
 // destroy 
-# terraform destroy
+$ make destroy
 ```
 
-3. ECR
+3. set value in AWS
+```shell
+$ make ecr_repo   # ecrにイメージの型をpush
+$ make ssm-store  # パラメーターストアに環境変数を登録
 ```
-$ aws ecr create-repository --repository-name sample-app
-$ aws ecr create-repository --repository-name sample-nginx
-```
-4. ECSのcontainer-definitionの編集
-```
-ECR名に合わせる
-```
+
+## 注意
+・APP_NAMEは整合性を取るため、リポジトリ名にすること(大文字不可)
+・アプリケーション側のecs.ymlの参照先がAPP_NAMEと一致するか確認
 
 
 Q  how to connect ec2 ?
