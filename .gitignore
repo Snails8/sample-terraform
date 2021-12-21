@@ -3,6 +3,7 @@
 
 .env
 .env.production
+.env.github
 
 # Terraform
 .terraform
