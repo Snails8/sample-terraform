@@ -6,26 +6,29 @@
 // set your credential keys in .env
 $ cp .env.example .env
 
-// set prod env
+// set prod envvalue
 $ cp .env.production.example .envproduction
 
 // set your public key
 $ vim ec2/sample-ec2-key.pub
+
 ```
 
 2. Run terraform
 ```
 $ docker-compose up -d
-// 設定を変えた場合、毎回は走らせること
-$ make init 
 
-$ make plan
+// 設定を変えた場合、毎回は走らせること
+# make init 
+
+// initialization (if you change a file , please run)
+# make plan
 
 // create aws resources 
-$make apply
+# make apply
 
 // destroy 
-$ make destroy
+# make destroy
 ```
 
 3. set value in AWS
