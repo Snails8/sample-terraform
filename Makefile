@@ -18,6 +18,9 @@ ssm-store:
 	sh ssm-put.sh $(TF_VAR_APP_NAME) .env.production && \
 	sh ssm-put.sh $(TF_VAR_APP_NAME) .env
 
+up:
+	docker-compose up -d --build
+
 init:
 	@${DC} terraform init
 
